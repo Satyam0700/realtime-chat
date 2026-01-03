@@ -5,4 +5,4 @@ import type { App } from '../app/api/[[...slugs]]/route'
 const apiUrl = process.env.NEXT_PUBLIC_API_URL! || 'http://localhost:3000'
 
 // .api to enter /api prefix
-export const client = treaty<App>(apiUrl).api
+export const client = treaty<App>("https://shh-mode.vercel.app").api
