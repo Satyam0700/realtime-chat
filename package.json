@@ -9,9 +9,20 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@elysiajs/eden": "^1.4.6",
+    "@sinclair/typebox": "^0.34.45",
+    "@tanstack/react-query": "^5.90.16",
+    "@upstash/realtime": "^1.0.0",
+    "@upstash/redis": "^1.36.0",
+    "date-fns": "^4.1.0",
+    "elysia": "^1.4.19",
+    "file-type": "^21.2.0",
+    "nanoid": "^5.1.6",
     "next": "16.1.1",
+    "openapi-types": "^12.1.3",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "zod": "^4.3.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
