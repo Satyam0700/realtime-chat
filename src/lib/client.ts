@@ -1,14 +1,8 @@
 import { treaty } from '@elysiajs/eden'
 import type { App } from '../app/api/[[...slugs]]/route'
 
+// Get API URL from environment or use default
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
+
 // .api to enter /api prefix
-export const client = treaty<App>("https://shh-mode.vercel.app").api
-
-// import { treaty } from '@elysiajs/eden'
-// import { app } from '../app/api/[[...slugs]]/route'
-
-// // .api to enter /api prefix
-// export const client =
-//   typeof process !== 'undefined'
-//     ? treaty(app).api
-//     : treaty<typeof app>('localhost:3000').api
+export const client = treaty<App>(apiUrl).api
