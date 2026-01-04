@@ -116,19 +116,19 @@ const Page = () => {
           <div className="flex flex-col">
             <span className="text-xs text-zinc-500 uppercase">Room ID</span>
             <div className="flex items-center gap-2">
-              <span className="font-bold text-green-500">{roomId}</span>
+              <span className="font-bold text-green-500 break-all">{roomId}</span>
               <button
                 onClick={copyToClipboard}
-                className="text-[10px] bg-zinc-800 hover:bg-zinc-700 px-2 py-0.5 rounded text-zinc-400 hover:text-zinc-200 transition-colors"
+                className="text-[10px] sm:relative sm:top-0 sm:left-0 absolute left-20 top-3 bg-zinc-800 hover:bg-zinc-700 px-2 py-0.5 rounded text-zinc-400 hover:text-zinc-200 transition-colors"
               >
                 {copyState}
               </button>
             </div>
           </div>
 
-          <div className="h-8 w-px bg-zinc-800" />
+          <div className="h-8 w-px bg-zinc-800 sm:block hidden" />
 
-          <div className="flex flex-col">
+          <div className="flex sm:flex-col sm:relative sm:top-0 sm:right-0 absolute right-6 top-20 gap-2 sm:gap-0 items-center sm:items-start">
             <span className="text-xs text-zinc-500 uppercase">Expires-In</span>
             <span
               className={`text-sm font-bold flex items-center gap-2 ${
