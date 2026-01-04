@@ -1,49 +1,55 @@
-import { NextRequest, NextResponse, } from "next/server"
+import { NextRequest, NextResponse } from "next/server";
 import { redis } from "./lib/redis";
 import { nanoid } from "nanoid";
 
 export const proxy = async (req: NextRequest) => {
-    const pathname = req.nextUrl.pathname
+  const pathname = req.nextUrl.pathname;
+  const userAgent = req.headers.get("user-agent") || "";
+  const isBot = /facebookexternalhit|whatsapp|telegrambot|twitterbot/i.test(userAgent)
+  if (isBot ) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
 
-    const roomMatch = pathname.match(/^\/room\/([^/]+)$/);
-    if (!roomMatch) return NextResponse.redirect(new URL('/', req.url));
+  const roomMatch = pathname.match(/^\/room\/([^/]+)$/);
+  if (!roomMatch) return NextResponse.redirect(new URL("/", req.url));
 
-    const roomId = roomMatch[1];
+  const roomId = roomMatch[1];
 
-    const meta = await redis.hgetall<{connected: string[]; createdAt: number}>(`meta:${roomId}`);
-    if (!meta){
-        return NextResponse.redirect(new URL('/?error=room-not-found', req.url));
-    }
+  const meta = await redis.hgetall<{ connected: string[]; createdAt: number }>(
+    `meta:${roomId}`
+  );
+  if (!meta) {
+    return NextResponse.redirect(new URL("/?error=room-not-found", req.url));
+  }
 
-    const existingToken = req.cookies.get("x-auth-token")?.value;
+  const existingToken = req.cookies.get("x-auth-token")?.value;
 
-    if(existingToken && meta.connected.includes(existingToken)){
-        return NextResponse.next();
-    }
+  if (existingToken && meta.connected.includes(existingToken)) {
+    return NextResponse.next();
+  }
 
-    if (meta.connected.length >= 2){
-        return NextResponse.redirect(new URL("/?error=room-full", req.url));
-    }
+  if (meta.connected.length >= 2) {
+    return NextResponse.redirect(new URL("/?error=room-full", req.url));
+  }
 
-    const response = NextResponse.next();
+  const response = NextResponse.next();
 
-    const token = nanoid();
+  const token = nanoid();
 
-    response.cookies.set("x-auth-token", token, {
-        path: '/',
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-    });
+  response.cookies.set("x-auth-token", token, {
+    path: "/",
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  });
 
-    await redis.hset(`meta:${roomId}`, {
-        connected: [...meta.connected, token],
-    });
+  await redis.hset(`meta:${roomId}`, {
+    connected: [...meta.connected, token],
+  });
 
-    return response;
-
-}
+  return response;
+};
 
 export const config = {
-    matcher: '/room/:path*',
-}
+  matcher: "/room/:path*",
+};
