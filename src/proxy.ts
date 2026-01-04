@@ -5,7 +5,7 @@ import { nanoid } from "nanoid";
 export const proxy = async (req: NextRequest) => {
   const pathname = req.nextUrl.pathname;
   const userAgent = req.headers.get("user-agent") || "";
-  const isBot = /facebookexternalhit|whatsapp|telegrambot|twitterbot/i.test(userAgent)
+  const isBot = /facebookexternalhit|whatsapp|telegrambot|xbot|twitterbot/i.test(userAgent)
   if (isBot ) {
     return NextResponse.redirect(new URL("/", req.url));
   }

@@ -3,7 +3,7 @@ import { useUsername } from "@/hooks/use-username";
 import { client } from "@/lib/client";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 
 const Page = () => {
   return (
@@ -23,7 +23,13 @@ function Lobby() {
   const wasDestroyed = searchParams.get("destroyed") === "true";
   const error = searchParams.get("error");
 
-  const { mutate: createRoom } = useMutation({
+  useEffect(() => {
+    if (wasDestroyed || error) {
+      setTimeout(() => router.replace("/"), 10000);
+    }
+  })
+
+  const { mutate: createRoom, isPending } = useMutation({
     mutationFn: async () => {
       const res = await client.room.create.post();
       if (res.status === 200) {
@@ -82,9 +88,12 @@ function Lobby() {
 
             <button
               onClick={() => createRoom()}
+              disabled={isPending}
               className="w-full bg-zinc-100 text-black p-3 text-sm font-bold hover:bg-zinc-50 hover:text-black transition-colors mt-2 cursor-pointer disabled:opacity-50"
             >
-              CREATE SECURE ROOM
+              {
+                isPending ? "CREATING ROOM..." : "CREATE SECURE ROOM"
+              }
             </button>
           </div>
         </div>

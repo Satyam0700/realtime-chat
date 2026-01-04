@@ -24,3 +24,7 @@ body {
   color: var(--foreground);
   font-family: var(--font-jetbrains-mono);
 }
+
+::-webkit-scrollbar {
+  width: 8px;
+}

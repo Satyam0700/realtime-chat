@@ -3,7 +3,7 @@ import { useUsername } from "@/hooks/use-username";
 import { client } from "@/lib/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { format } from "date-fns"
 import { useRealtime } from "@/lib/realtime-client";
 
@@ -69,6 +69,15 @@ const Page = () => {
     },
   });
 
+  const messageEndRef = useRef<HTMLDivElement>(null);
+  const scrollToBottom = () => {
+    messageEndRef.current?.scrollIntoView({ behavior: 'smooth'})
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
+
   const { mutate: sendMessage, isPending } = useMutation({
     mutationFn: async ({ text }: { text: string }) => {
       await client.messages.post(
@@ -97,7 +106,7 @@ const Page = () => {
     
   })
 
-  const {mutate: destroyRoom} = useMutation({
+  const {mutate: destroyRoom } = useMutation({
     mutationFn: async () => {
       await client.room.delete(null, { query: { roomId } });
     }
@@ -163,7 +172,7 @@ const Page = () => {
         {messages?.messages.map((msg) => (
           <div key={msg.id} className="flex flex-col items-start">
             <div className="max-w-[80%] group">
-              <div className="flex items-baseline gap-3 mb-1">
+              <div ref={messageEndRef} className="flex items-baseline gap-3 mb-1">
                 <span
                   className={`text-sm font-bold ${
                     msg.sender === username
